@@ -1,14 +1,42 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { WelcomeScreen } from "@/components/WelcomeScreen";
+import { RoleSelection } from "@/components/RoleSelection";
+import { DashboardLayout } from "@/components/DashboardLayout";
+
+type AppState = "welcome" | "roleSelection" | "dashboard";
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const [currentState, setCurrentState] = useState<AppState>("welcome");
+  const [selectedRole, setSelectedRole] = useState<string>("");
+
+  const handleContinue = () => {
+    setCurrentState("roleSelection");
+  };
+
+  const handleRoleSelect = (roleId: string) => {
+    setSelectedRole(roleId);
+    setCurrentState("dashboard");
+  };
+
+  const handleBack = () => {
+    setCurrentState("welcome");
+  };
+
+  const handleLogout = () => {
+    setSelectedRole("");
+    setCurrentState("welcome");
+  };
+
+  switch (currentState) {
+    case "welcome":
+      return <WelcomeScreen onContinue={handleContinue} />;
+    case "roleSelection":
+      return <RoleSelection onSelectRole={handleRoleSelect} onBack={handleBack} />;
+    case "dashboard":
+      return <DashboardLayout role={selectedRole} onLogout={handleLogout} />;
+    default:
+      return <WelcomeScreen onContinue={handleContinue} />;
+  }
 };
 
 export default Index;
